@@ -146,3 +146,34 @@ jobs:
           repository: ./sdk/sdks/${{ matrix.sdk }}
           commit_user_name: NumaryBot
           commit_user_email: support@numary.com%
+  tests_post_release:
+    name: 'Tests: Check storage upgrade'
+    env:
+      working-directory: ./tests/infra/
+      TF_VAR_ledger_version: ${{ github.event.release.tag_name }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./tests/infra/
+    needs:
+      - build_binary
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false # This is recommended so the `terraform show` command outputs valid JSON
+          cli_config_credentials_token: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: eu-west-1
+        role-to-assume: arn:aws:iam::955332203423:role/github-access
+        role-duration-seconds: 3600
+    - name: Run Test
+      run: sh ./test.sh
+      working-directory: ${{ env.working-directory }}
+    - name: Terraform destroy
+      run: terraform destroy -auto-approve
+      working-directory: ${{ env.working-directory }}
+
