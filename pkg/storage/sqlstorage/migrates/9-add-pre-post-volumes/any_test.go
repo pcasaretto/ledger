@@ -9,6 +9,7 @@ import (
 
 	"github.com/huandu/go-sqlbuilder"
 	"github.com/numary/ledger/pkg/core"
+	"github.com/numary/ledger/pkg/core/monetary"
 	"github.com/numary/ledger/pkg/ledgertesting"
 	"github.com/numary/ledger/pkg/storage"
 	"github.com/numary/ledger/pkg/storage/sqlstorage"
@@ -29,7 +30,7 @@ var testCases = []testCase{
 			{
 				Source:      "world",
 				Destination: "bank",
-				Amount:      core.NewMonetaryInt(100),
+				Amount:      monetary.NewInt(100),
 				Asset:       "USD",
 			},
 		},
@@ -44,12 +45,12 @@ var testCases = []testCase{
 		expectedPostCommitVolumes: core.AccountsAssetsVolumes{
 			"world": {
 				"USD": {
-					Output: core.NewMonetaryInt(100),
+					Output: monetary.NewInt(100),
 				},
 			},
 			"bank": {
 				"USD": {
-					Input: core.NewMonetaryInt(100),
+					Input: monetary.NewInt(100),
 				},
 			},
 		},
@@ -59,14 +60,14 @@ var testCases = []testCase{
 			{
 				Source:      "world",
 				Destination: "bank2",
-				Amount:      core.NewMonetaryInt(100),
+				Amount:      monetary.NewInt(100),
 				Asset:       "USD",
 			},
 		},
 		expectedPreCommitVolumes: core.AccountsAssetsVolumes{
 			"world": {
 				"USD": {
-					Output: core.NewMonetaryInt(100),
+					Output: monetary.NewInt(100),
 				},
 			},
 			"bank2": {
@@ -76,12 +77,12 @@ var testCases = []testCase{
 		expectedPostCommitVolumes: core.AccountsAssetsVolumes{
 			"world": {
 				"USD": {
-					Output: core.NewMonetaryInt(200),
+					Output: monetary.NewInt(200),
 				},
 			},
 			"bank2": {
 				"USD": {
-					Input: core.NewMonetaryInt(100),
+					Input: monetary.NewInt(100),
 				},
 			},
 		},
@@ -91,47 +92,47 @@ var testCases = []testCase{
 			{
 				Source:      "world",
 				Destination: "bank",
-				Amount:      core.NewMonetaryInt(100),
+				Amount:      monetary.NewInt(100),
 				Asset:       "USD",
 			},
 			{
 				Source:      "world",
 				Destination: "bank2",
-				Amount:      core.NewMonetaryInt(100),
+				Amount:      monetary.NewInt(100),
 				Asset:       "USD",
 			},
 		},
 		expectedPreCommitVolumes: core.AccountsAssetsVolumes{
 			"world": {
 				"USD": {
-					Output: core.NewMonetaryInt(200),
+					Output: monetary.NewInt(200),
 				},
 			},
 			"bank": {
 				"USD": {
-					Input: core.NewMonetaryInt(100),
+					Input: monetary.NewInt(100),
 				},
 			},
 			"bank2": {
 				"USD": {
-					Input: core.NewMonetaryInt(100),
+					Input: monetary.NewInt(100),
 				},
 			},
 		},
 		expectedPostCommitVolumes: core.AccountsAssetsVolumes{
 			"world": {
 				"USD": {
-					Output: core.NewMonetaryInt(400),
+					Output: monetary.NewInt(400),
 				},
 			},
 			"bank2": {
 				"USD": {
-					Input: core.NewMonetaryInt(200),
+					Input: monetary.NewInt(200),
 				},
 			},
 			"bank": {
 				"USD": {
-					Input: core.NewMonetaryInt(200),
+					Input: monetary.NewInt(200),
 				},
 			},
 		},
@@ -141,20 +142,20 @@ var testCases = []testCase{
 			{
 				Source:      "bank",
 				Destination: "user:1",
-				Amount:      core.NewMonetaryInt(10),
+				Amount:      monetary.NewInt(10),
 				Asset:       "USD",
 			},
 			{
 				Source:      "bank",
 				Destination: "user:2",
-				Amount:      core.NewMonetaryInt(90),
+				Amount:      monetary.NewInt(90),
 				Asset:       "USDT",
 			},
 		},
 		expectedPreCommitVolumes: core.AccountsAssetsVolumes{
 			"bank": {
 				"USD": {
-					Input: core.NewMonetaryInt(200),
+					Input: monetary.NewInt(200),
 				},
 				"USDT": {},
 			},
@@ -168,21 +169,21 @@ var testCases = []testCase{
 		expectedPostCommitVolumes: core.AccountsAssetsVolumes{
 			"bank": {
 				"USD": {
-					Input:  core.NewMonetaryInt(200),
-					Output: core.NewMonetaryInt(10),
+					Input:  monetary.NewInt(200),
+					Output: monetary.NewInt(10),
 				},
 				"USDT": {
-					Output: core.NewMonetaryInt(90),
+					Output: monetary.NewInt(90),
 				},
 			},
 			"user:1": {
 				"USD": {
-					Input: core.NewMonetaryInt(10),
+					Input: monetary.NewInt(10),
 				},
 			},
 			"user:2": {
 				"USDT": {
-					Input: core.NewMonetaryInt(90),
+					Input: monetary.NewInt(90),
 				},
 			},
 		},

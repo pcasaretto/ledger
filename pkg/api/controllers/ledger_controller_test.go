@@ -8,6 +8,7 @@ import (
 	"github.com/numary/ledger/pkg/api"
 	"github.com/numary/ledger/pkg/api/internal"
 	"github.com/numary/ledger/pkg/core"
+	"github.com/numary/ledger/pkg/core/monetary"
 	"github.com/numary/ledger/pkg/ledger"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
@@ -22,7 +23,7 @@ func TestGetStats(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "alice",
-							Amount:      core.NewMonetaryInt(100),
+							Amount:      monetary.NewInt(100),
 							Asset:       "USD",
 						},
 					},
@@ -34,7 +35,7 @@ func TestGetStats(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "boc",
-							Amount:      core.NewMonetaryInt(100),
+							Amount:      monetary.NewInt(100),
 							Asset:       "USD",
 						},
 					},

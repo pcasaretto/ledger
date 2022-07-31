@@ -4,13 +4,15 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"regexp"
+
+	"github.com/numary/ledger/pkg/core/monetary"
 )
 
 type Posting struct {
-	Source      string      `json:"source"`
-	Destination string      `json:"destination"`
-	Amount      MonetaryInt `json:"amount"`
-	Asset       string      `json:"asset"`
+	Source      string        `json:"source"`
+	Destination string        `json:"destination"`
+	Amount      *monetary.Int `json:"amount"`
+	Asset       string        `json:"asset"`
 }
 
 type Postings []Posting

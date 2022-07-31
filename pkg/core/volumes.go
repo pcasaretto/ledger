@@ -3,17 +3,19 @@ package core
 import (
 	"database/sql/driver"
 	"encoding/json"
+
+	"github.com/numary/ledger/pkg/core/monetary"
 )
 
 type Volumes struct {
-	Input  MonetaryInt `json:"input"`
-	Output MonetaryInt `json:"output"`
+	Input  *monetary.Int `json:"input"`
+	Output *monetary.Int `json:"output"`
 }
 
 type VolumesWithBalance struct {
-	Input   MonetaryInt `json:"input"`
-	Output  MonetaryInt `json:"output"`
-	Balance MonetaryInt `json:"balance"`
+	Input   *monetary.Int `json:"input"`
+	Output  *monetary.Int `json:"output"`
+	Balance *monetary.Int `json:"balance"`
 }
 
 func (v Volumes) MarshalJSON() ([]byte, error) {
@@ -24,11 +26,11 @@ func (v Volumes) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (v Volumes) Balance() MonetaryInt {
+func (v Volumes) Balance() *monetary.Int {
 	return SubMonetaryInt(v.Input, v.Output)
 }
 
-type AssetsBalances map[string]MonetaryInt
+type AssetsBalances map[string]*monetary.Int
 type AssetsVolumes map[string]Volumes
 
 type AccountsBalances map[string]AssetsBalances
@@ -61,7 +63,7 @@ func (a AccountsAssetsVolumes) SetVolumes(account, asset string, volumes Volumes
 	}
 }
 
-func (a AccountsAssetsVolumes) AddInput(account, asset string, input MonetaryInt) {
+func (a AccountsAssetsVolumes) AddInput(account, asset string, input *monetary.Int) {
 	if assetsVolumes, ok := a[account]; !ok {
 		a[account] = map[string]Volumes{
 			asset: {
@@ -75,7 +77,7 @@ func (a AccountsAssetsVolumes) AddInput(account, asset string, input MonetaryInt
 	}
 }
 
-func (a AccountsAssetsVolumes) AddOutput(account, asset string, output MonetaryInt) {
+func (a AccountsAssetsVolumes) AddOutput(account, asset string, output *monetary.Int) {
 	if assetsVolumes, ok := a[account]; !ok {
 		a[account] = map[string]Volumes{
 			asset: {

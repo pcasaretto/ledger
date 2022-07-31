@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/numary/ledger/pkg/core"
+	"github.com/numary/ledger/pkg/core/monetary"
 	"github.com/numary/ledger/pkg/storage"
 )
 
@@ -22,7 +23,7 @@ func (tva *transactionVolumeAggregator) preCommitVolumes() core.AccountsAssetsVo
 	return tva.preVolumes
 }
 
-func (tva *transactionVolumeAggregator) transfer(ctx context.Context, from, to, asset string, amount core.MonetaryInt) error {
+func (tva *transactionVolumeAggregator) transfer(ctx context.Context, from, to, asset string, amount *monetary.Int) error {
 	if tva.preVolumes == nil {
 		tva.preVolumes = core.AccountsAssetsVolumes{}
 	}

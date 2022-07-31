@@ -14,6 +14,7 @@ import (
 	"github.com/numary/ledger/pkg/api/controllers"
 	"github.com/numary/ledger/pkg/api/internal"
 	"github.com/numary/ledger/pkg/core"
+	"github.com/numary/ledger/pkg/core/monetary"
 	"github.com/numary/ledger/pkg/storage"
 	"github.com/numary/ledger/pkg/storage/sqlstorage"
 	"github.com/stretchr/testify/assert"
@@ -30,7 +31,7 @@ func TestGetAccounts(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "alice",
-							Amount:      core.NewMonetaryInt(150),
+							Amount:      monetary.NewInt(150),
 							Asset:       "USD",
 						},
 					},
@@ -42,7 +43,7 @@ func TestGetAccounts(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "bob",
-							Amount:      core.NewMonetaryInt(100),
+							Amount:      monetary.NewInt(100),
 							Asset:       "USD",
 						},
 					},
@@ -425,7 +426,7 @@ func TestGetAccount(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "alice",
-							Amount:      core.NewMonetaryInt(100),
+							Amount:      monetary.NewInt(100),
 							Asset:       "USD",
 						},
 					},
@@ -451,11 +452,11 @@ func TestGetAccount(t *testing.T) {
 							},
 						},
 						Balances: core.AssetsBalances{
-							"USD": core.NewMonetaryInt(100),
+							"USD": monetary.NewInt(100),
 						},
 						Volumes: core.AssetsVolumes{
 							"USD": {
-								Input: core.NewMonetaryInt(100),
+								Input: monetary.NewInt(100),
 							},
 						},
 					}, resp)
@@ -502,7 +503,7 @@ func TestPostAccountMetadata(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "alice",
-							Amount:      core.NewMonetaryInt(100),
+							Amount:      monetary.NewInt(100),
 							Asset:       "USD",
 						},
 					},

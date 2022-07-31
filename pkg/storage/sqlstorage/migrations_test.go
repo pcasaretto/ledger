@@ -12,6 +12,7 @@ import (
 	"github.com/numary/go-libs/sharedlogging"
 	"github.com/numary/go-libs/sharedlogging/sharedlogginglogrus"
 	"github.com/numary/ledger/pkg/core"
+	"github.com/numary/ledger/pkg/core/monetary"
 	"github.com/numary/ledger/pkg/ledgertesting"
 	"github.com/numary/ledger/pkg/storage"
 	"github.com/numary/ledger/pkg/storage/sqlstorage"
@@ -100,13 +101,13 @@ var postMigrate = map[string]func(t *testing.T, store *sqlstorage.Store){
 					{
 						Source:      "world",
 						Destination: "player1",
-						Amount:      core.NewMonetaryInt(100),
+						Amount:      monetary.NewInt(100),
 						Asset:       "USD",
 					},
 					{
 						Source:      "world",
 						Destination: "player2",
-						Amount:      core.NewMonetaryInt(100),
+						Amount:      monetary.NewInt(100),
 						Asset:       "USD",
 					},
 				},
@@ -142,7 +143,7 @@ var postMigrate = map[string]func(t *testing.T, store *sqlstorage.Store){
 					{
 						Source:      "player1",
 						Destination: "shop",
-						Amount:      core.NewMonetaryInt(1),
+						Amount:      monetary.NewInt(1),
 						Asset:       "USD",
 					},
 				},
@@ -173,13 +174,13 @@ var postMigrate = map[string]func(t *testing.T, store *sqlstorage.Store){
 			{
 				Source:      "world",
 				Destination: "player1",
-				Amount:      core.NewMonetaryInt(100),
+				Amount:      monetary.NewInt(100),
 				Asset:       "USD",
 			},
 			{
 				Source:      "world",
 				Destination: "player2",
-				Amount:      core.NewMonetaryInt(100),
+				Amount:      monetary.NewInt(100),
 				Asset:       "USD",
 			},
 		}, tx.Postings) {
@@ -228,8 +229,8 @@ var postMigrate = map[string]func(t *testing.T, store *sqlstorage.Store){
 		}
 		if !assert.Equal(t, core.AssetsVolumes{
 			"USD": {
-				Input:  core.NewMonetaryInt(100),
-				Output: core.NewMonetaryInt(1),
+				Input:  monetary.NewInt(100),
+				Output: monetary.NewInt(1),
 			},
 		}, volumes) {
 			return
@@ -302,7 +303,7 @@ var postMigrate = map[string]func(t *testing.T, store *sqlstorage.Store){
 							{
 								Source:      "player1",
 								Destination: "shop",
-								Amount:      core.NewMonetaryInt(1),
+								Amount:      monetary.NewInt(1),
 								Asset:       "USD",
 							},
 						},
@@ -383,13 +384,13 @@ var postMigrate = map[string]func(t *testing.T, store *sqlstorage.Store){
 							{
 								Source:      "world",
 								Destination: "player1",
-								Amount:      core.NewMonetaryInt(100),
+								Amount:      monetary.NewInt(100),
 								Asset:       "USD",
 							},
 							{
 								Source:      "world",
 								Destination: "player2",
-								Amount:      core.NewMonetaryInt(100),
+								Amount:      monetary.NewInt(100),
 								Asset:       "USD",
 							},
 						},

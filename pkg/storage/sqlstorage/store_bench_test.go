@@ -9,6 +9,7 @@ import (
 	"github.com/huandu/go-sqlbuilder"
 	"github.com/numary/ledger/internal/pgtesting"
 	"github.com/numary/ledger/pkg/core"
+	"github.com/numary/ledger/pkg/core/monetary"
 	"github.com/numary/ledger/pkg/storage"
 	"github.com/numary/ledger/pkg/storage/sqlstorage"
 	"github.com/pborman/uuid"
@@ -119,13 +120,13 @@ func testBenchmarkGetTransactions(b *testing.B, store *sqlstorage.Store) {
 						Source:      "world",
 						Destination: fmt.Sprintf("player%d", i),
 						Asset:       "USD",
-						Amount:      core.NewMonetaryInt(100),
+						Amount:      monetary.NewInt(100),
 					},
 					{
 						Source:      "world",
 						Destination: fmt.Sprintf("player%d", i+1),
 						Asset:       "USD",
-						Amount:      core.NewMonetaryInt(100),
+						Amount:      monetary.NewInt(100),
 					},
 				},
 			},
@@ -160,13 +161,13 @@ func testBenchmarkLastLog(b *testing.B, store *sqlstorage.Store) {
 						Source:      "world",
 						Destination: fmt.Sprintf("player%d", i),
 						Asset:       "USD",
-						Amount:      core.NewMonetaryInt(100),
+						Amount:      monetary.NewInt(100),
 					},
 					{
 						Source:      "world",
 						Destination: fmt.Sprintf("player%d", i+1),
 						Asset:       "USD",
-						Amount:      core.NewMonetaryInt(100),
+						Amount:      monetary.NewInt(100),
 					},
 				},
 			},
@@ -197,19 +198,19 @@ func testBenchmarkAggregateVolumes(b *testing.B, store *sqlstorage.Store) {
 						Source:      "world",
 						Destination: fmt.Sprintf("player%d", i),
 						Asset:       "USD",
-						Amount:      core.NewMonetaryInt(100),
+						Amount:      monetary.NewInt(100),
 					},
 					{
 						Source:      "world",
 						Destination: fmt.Sprintf("player%d", i+1),
 						Asset:       "USD",
-						Amount:      core.NewMonetaryInt(100),
+						Amount:      monetary.NewInt(100),
 					},
 					{
 						Source:      fmt.Sprintf("player%d", i),
 						Destination: fmt.Sprintf("player%d", i+1),
 						Asset:       "USD",
-						Amount:      core.NewMonetaryInt(50),
+						Amount:      monetary.NewInt(50),
 					},
 				},
 			},
@@ -238,7 +239,7 @@ func testBenchmarkSaveTransactions(b *testing.B, store *sqlstorage.Store) {
 						Source:      "world",
 						Destination: fmt.Sprintf("player%d", n),
 						Asset:       "USD",
-						Amount:      core.NewMonetaryInt(100),
+						Amount:      monetary.NewInt(100),
 					},
 				},
 			},

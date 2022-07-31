@@ -11,6 +11,7 @@ import (
 	"github.com/numary/ledger/pkg/api"
 	"github.com/numary/ledger/pkg/api/internal"
 	"github.com/numary/ledger/pkg/core"
+	"github.com/numary/ledger/pkg/core/monetary"
 	"github.com/numary/ledger/pkg/storage/sqlstorage"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -26,7 +27,7 @@ func TestGetBalancesAggregated(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "alice",
-							Amount:      core.NewMonetaryInt(150),
+							Amount:      monetary.NewInt(150),
 							Asset:       "USD",
 						},
 					},
@@ -38,7 +39,7 @@ func TestGetBalancesAggregated(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "bob",
-							Amount:      core.NewMonetaryInt(100),
+							Amount:      monetary.NewInt(100),
 							Asset:       "USD",
 						},
 					},
@@ -51,7 +52,7 @@ func TestGetBalancesAggregated(t *testing.T) {
 
 					resp, ok := internal.DecodeSingleResponse[core.AssetsBalances](t, rsp.Body)
 					assert.Equal(t, ok, true)
-					assert.Equal(t, core.AssetsBalances{"USD": core.NewMonetaryInt(0)}, resp)
+					assert.Equal(t, core.AssetsBalances{"USD": monetary.NewInt(0)}, resp)
 				})
 
 				t.Run("filter by address", func(t *testing.T) {
@@ -60,7 +61,7 @@ func TestGetBalancesAggregated(t *testing.T) {
 
 					resp, ok := internal.DecodeSingleResponse[core.AssetsBalances](t, rsp.Body)
 					assert.Equal(t, true, ok)
-					assert.Equal(t, core.AssetsBalances{"USD": core.NewMonetaryInt(-250)}, resp)
+					assert.Equal(t, core.AssetsBalances{"USD": monetary.NewInt(-250)}, resp)
 				})
 
 				t.Run("filter by address no result", func(t *testing.T) {
@@ -87,7 +88,7 @@ func TestGetBalances(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "alice",
-							Amount:      core.NewMonetaryInt(150),
+							Amount:      monetary.NewInt(150),
 							Asset:       "USD",
 						},
 					},
@@ -99,7 +100,7 @@ func TestGetBalances(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "bob",
-							Amount:      core.NewMonetaryInt(100),
+							Amount:      monetary.NewInt(100),
 							Asset:       "USD",
 						},
 					},
@@ -111,7 +112,7 @@ func TestGetBalances(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "alice",
-							Amount:      core.NewMonetaryInt(200),
+							Amount:      monetary.NewInt(200),
 							Asset:       "CAD",
 						},
 					},
@@ -123,7 +124,7 @@ func TestGetBalances(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "alice",
-							Amount:      core.NewMonetaryInt(400),
+							Amount:      monetary.NewInt(400),
 							Asset:       "EUR",
 						},
 					},
@@ -163,9 +164,9 @@ func TestGetBalances(t *testing.T) {
 
 					resp := internal.DecodeCursorResponse[core.AccountsBalances](t, rsp.Body)
 					assert.Equal(t, []core.AccountsBalances{
-						{"world": core.AssetsBalances{"USD": core.NewMonetaryInt(-250), "EUR": core.NewMonetaryInt(-400), "CAD": core.NewMonetaryInt(-200)}},
-						{"bob": core.AssetsBalances{"USD": core.NewMonetaryInt(100)}},
-						{"alice": core.AssetsBalances{"USD": core.NewMonetaryInt(150), "EUR": core.NewMonetaryInt(400), "CAD": core.NewMonetaryInt(200)}},
+						{"world": core.AssetsBalances{"USD": monetary.NewInt(-250), "EUR": monetary.NewInt(-400), "CAD": monetary.NewInt(-200)}},
+						{"bob": core.AssetsBalances{"USD": monetary.NewInt(100)}},
+						{"alice": core.AssetsBalances{"USD": monetary.NewInt(150), "EUR": monetary.NewInt(400), "CAD": monetary.NewInt(200)}},
 					}, resp.Data)
 				})
 
@@ -175,7 +176,7 @@ func TestGetBalances(t *testing.T) {
 
 					resp := internal.DecodeCursorResponse[core.AccountsBalances](t, rsp.Body)
 					assert.Equal(t, []core.AccountsBalances{
-						{"alice": core.AssetsBalances{"USD": core.NewMonetaryInt(150), "EUR": core.NewMonetaryInt(400), "CAD": core.NewMonetaryInt(200)}},
+						{"alice": core.AssetsBalances{"USD": monetary.NewInt(150), "EUR": monetary.NewInt(400), "CAD": monetary.NewInt(200)}},
 					}, resp.Data)
 				})
 
@@ -185,7 +186,7 @@ func TestGetBalances(t *testing.T) {
 
 					resp := internal.DecodeCursorResponse[core.AccountsBalances](t, rsp.Body)
 					assert.Equal(t, []core.AccountsBalances{
-						{"world": core.AssetsBalances{"USD": core.NewMonetaryInt(-250), "EUR": core.NewMonetaryInt(-400), "CAD": core.NewMonetaryInt(-200)}},
+						{"world": core.AssetsBalances{"USD": monetary.NewInt(-250), "EUR": monetary.NewInt(-400), "CAD": monetary.NewInt(-200)}},
 					}, resp.Data)
 				})
 

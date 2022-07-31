@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/numary/ledger/pkg/core/monetary"
 )
 
 func TestReverseTransaction(t *testing.T) {
@@ -13,13 +14,13 @@ func TestReverseTransaction(t *testing.T) {
 				{
 					Source:      "world",
 					Destination: "users:001",
-					Amount:      NewMonetaryInt(100),
+					Amount:      monetary.NewInt(100),
 					Asset:       "COIN",
 				},
 				{
 					Source:      "users:001",
 					Destination: "payments:001",
-					Amount:      NewMonetaryInt(100),
+					Amount:      monetary.NewInt(100),
 					Asset:       "COIN",
 				},
 			},
@@ -32,13 +33,13 @@ func TestReverseTransaction(t *testing.T) {
 			{
 				Source:      "payments:001",
 				Destination: "users:001",
-				Amount:      NewMonetaryInt(100),
+				Amount:      monetary.NewInt(100),
 				Asset:       "COIN",
 			},
 			{
 				Source:      "users:001",
 				Destination: "world",
-				Amount:      NewMonetaryInt(100),
+				Amount:      monetary.NewInt(100),
 				Asset:       "COIN",
 			},
 		},

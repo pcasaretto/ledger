@@ -12,6 +12,7 @@ import (
 	"github.com/lib/pq"
 	"github.com/numary/go-libs/sharedapi"
 	"github.com/numary/ledger/pkg/core"
+	"github.com/numary/ledger/pkg/core/monetary"
 	"github.com/numary/ledger/pkg/storage"
 )
 
@@ -140,7 +141,7 @@ func (s *Store) getBalances(ctx context.Context, exec executor, q storage.Balanc
 			if err != nil {
 				return sharedapi.Cursor[core.AccountsBalances]{}, s.error(err)
 			}
-			accountsBalances[currentAccount][asset] = core.NewMonetaryInt(balances)
+			accountsBalances[currentAccount][asset] = monetary.NewInt(balances)
 		}
 
 		accounts = append(accounts, accountsBalances)

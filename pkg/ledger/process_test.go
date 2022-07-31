@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/numary/ledger/pkg/core"
+	"github.com/numary/ledger/pkg/core/monetary"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -14,12 +15,12 @@ func TestLedger_processTx(t *testing.T) {
 	runOnLedger(func(l *Ledger) {
 		t.Run("multi assets", func(t *testing.T) {
 			var (
-				worldTotoUSD  core.MonetaryInt = core.NewMonetaryInt(43)
-				worldAliceUSD core.MonetaryInt = core.NewMonetaryInt(98)
-				aliceTotoUSD  core.MonetaryInt = core.NewMonetaryInt(45)
-				worldTotoEUR  core.MonetaryInt = core.NewMonetaryInt(15)
-				worldAliceEUR core.MonetaryInt = core.NewMonetaryInt(10)
-				totoAliceEUR  core.MonetaryInt = core.NewMonetaryInt(5)
+				worldTotoUSD  = monetary.NewInt(43)
+				worldAliceUSD = monetary.NewInt(98)
+				aliceTotoUSD  = monetary.NewInt(45)
+				worldTotoEUR  = monetary.NewInt(15)
+				worldAliceEUR = monetary.NewInt(10)
+				totoAliceEUR  = monetary.NewInt(5)
 			)
 
 			postings := []core.Posting{
@@ -182,20 +183,20 @@ func TestLedger_processTx(t *testing.T) {
 						ID: 0,
 						PreCommitVolumes: core.AccountsAssetsVolumes{
 							"toto": core.AssetsVolumes{"USD": core.Volumes{
-								Input:  core.NewMonetaryInt(0),
-								Output: core.NewMonetaryInt(0),
+								Input:  monetary.NewInt(0),
+								Output: monetary.NewInt(0),
 							}},
 							"world": core.AssetsVolumes{"USD": core.Volumes{
-								Input:  core.NewMonetaryInt(0),
-								Output: core.NewMonetaryInt(0),
+								Input:  monetary.NewInt(0),
+								Output: monetary.NewInt(0),
 							}}},
 						PostCommitVolumes: core.AccountsAssetsVolumes{
 							"toto": core.AssetsVolumes{"USD": core.Volumes{
 								Input:  worldTotoUSD,
-								Output: core.NewMonetaryInt(0),
+								Output: monetary.NewInt(0),
 							}},
 							"world": core.AssetsVolumes{"USD": core.Volumes{
-								Input:  core.NewMonetaryInt(0),
+								Input:  monetary.NewInt(0),
 								Output: worldTotoUSD,
 							}}},
 					},
@@ -207,22 +208,22 @@ func TestLedger_processTx(t *testing.T) {
 						ID: 1,
 						PreCommitVolumes: core.AccountsAssetsVolumes{
 							"world": core.AssetsVolumes{"USD": core.Volumes{
-								Input:  core.NewMonetaryInt(0),
+								Input:  monetary.NewInt(0),
 								Output: worldTotoUSD,
 							}},
 							"alice": core.AssetsVolumes{"USD": core.Volumes{
-								Input:  core.NewMonetaryInt(0),
-								Output: core.NewMonetaryInt(0),
+								Input:  monetary.NewInt(0),
+								Output: monetary.NewInt(0),
 							}},
 						},
 						PostCommitVolumes: core.AccountsAssetsVolumes{
 							"world": core.AssetsVolumes{"USD": core.Volumes{
-								Input:  core.NewMonetaryInt(0),
+								Input:  monetary.NewInt(0),
 								Output: core.AddMonetaryInt(worldTotoUSD, worldAliceUSD),
 							}},
 							"alice": core.AssetsVolumes{"USD": core.Volumes{
 								Input:  worldAliceUSD,
-								Output: core.NewMonetaryInt(0),
+								Output: monetary.NewInt(0),
 							}},
 						},
 					},
@@ -235,11 +236,11 @@ func TestLedger_processTx(t *testing.T) {
 						PreCommitVolumes: core.AccountsAssetsVolumes{
 							"alice": core.AssetsVolumes{"USD": core.Volumes{
 								Input:  worldAliceUSD,
-								Output: core.NewMonetaryInt(0),
+								Output: monetary.NewInt(0),
 							}},
 							"toto": core.AssetsVolumes{"USD": core.Volumes{
 								Input:  worldTotoUSD,
-								Output: core.NewMonetaryInt(0),
+								Output: monetary.NewInt(0),
 							}},
 						},
 						PostCommitVolumes: core.AccountsAssetsVolumes{
@@ -249,7 +250,7 @@ func TestLedger_processTx(t *testing.T) {
 							}},
 							"toto": core.AssetsVolumes{"USD": core.Volumes{
 								Input:  core.AddMonetaryInt(worldTotoUSD, aliceTotoUSD),
-								Output: core.NewMonetaryInt(0),
+								Output: monetary.NewInt(0),
 							}},
 						},
 					},
@@ -261,22 +262,22 @@ func TestLedger_processTx(t *testing.T) {
 						ID: 3,
 						PreCommitVolumes: core.AccountsAssetsVolumes{
 							"world": core.AssetsVolumes{"EUR": core.Volumes{
-								Input:  core.NewMonetaryInt(0),
-								Output: core.NewMonetaryInt(0),
+								Input:  monetary.NewInt(0),
+								Output: monetary.NewInt(0),
 							}},
 							"toto": core.AssetsVolumes{"EUR": core.Volumes{
-								Input:  core.NewMonetaryInt(0),
-								Output: core.NewMonetaryInt(0),
+								Input:  monetary.NewInt(0),
+								Output: monetary.NewInt(0),
 							}},
 						},
 						PostCommitVolumes: core.AccountsAssetsVolumes{
 							"world": core.AssetsVolumes{"EUR": core.Volumes{
-								Input:  core.NewMonetaryInt(0),
+								Input:  monetary.NewInt(0),
 								Output: worldTotoEUR,
 							}},
 							"toto": core.AssetsVolumes{"EUR": core.Volumes{
 								Input:  worldTotoEUR,
-								Output: core.NewMonetaryInt(0),
+								Output: monetary.NewInt(0),
 							}},
 						},
 					},
@@ -288,22 +289,22 @@ func TestLedger_processTx(t *testing.T) {
 						ID: 4,
 						PreCommitVolumes: core.AccountsAssetsVolumes{
 							"world": core.AssetsVolumes{"EUR": core.Volumes{
-								Input:  core.NewMonetaryInt(0),
+								Input:  monetary.NewInt(0),
 								Output: worldTotoEUR,
 							}},
 							"alice": core.AssetsVolumes{"EUR": core.Volumes{
-								Input:  core.NewMonetaryInt(0),
-								Output: core.NewMonetaryInt(0),
+								Input:  monetary.NewInt(0),
+								Output: monetary.NewInt(0),
 							}},
 						},
 						PostCommitVolumes: core.AccountsAssetsVolumes{
 							"world": core.AssetsVolumes{"EUR": core.Volumes{
-								Input:  core.NewMonetaryInt(0),
+								Input:  monetary.NewInt(0),
 								Output: core.AddMonetaryInt(worldTotoEUR, worldAliceEUR),
 							}},
 							"alice": core.AssetsVolumes{"EUR": core.Volumes{
 								Input:  worldAliceEUR,
-								Output: core.NewMonetaryInt(0),
+								Output: monetary.NewInt(0),
 							}},
 						},
 					},
@@ -316,11 +317,11 @@ func TestLedger_processTx(t *testing.T) {
 						PreCommitVolumes: core.AccountsAssetsVolumes{
 							"toto": core.AssetsVolumes{"EUR": core.Volumes{
 								Input:  worldTotoEUR,
-								Output: core.NewMonetaryInt(0),
+								Output: monetary.NewInt(0),
 							}},
 							"alice": core.AssetsVolumes{"EUR": core.Volumes{
 								Input:  worldAliceEUR,
-								Output: core.NewMonetaryInt(0),
+								Output: monetary.NewInt(0),
 							}},
 						},
 						PostCommitVolumes: core.AccountsAssetsVolumes{
@@ -330,7 +331,7 @@ func TestLedger_processTx(t *testing.T) {
 							}},
 							"alice": core.AssetsVolumes{"EUR": core.Volumes{
 								Input:  core.AddMonetaryInt(worldAliceEUR, totoAliceEUR),
-								Output: core.NewMonetaryInt(0),
+								Output: monetary.NewInt(0),
 							}},
 						},
 					},
@@ -413,7 +414,7 @@ func TestLedger_processTx(t *testing.T) {
 					Postings: []core.Posting{{
 						Source:      "world",
 						Destination: "bank",
-						Amount:      core.NewMonetaryInt(100),
+						Amount:      monetary.NewInt(100),
 						Asset:       "USD",
 					}},
 					Timestamp: now.Add(-time.Second),

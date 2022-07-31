@@ -11,6 +11,7 @@ import (
 	"github.com/numary/ledger/pkg/api"
 	"github.com/numary/ledger/pkg/api/internal"
 	"github.com/numary/ledger/pkg/core"
+	"github.com/numary/ledger/pkg/core/monetary"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/fx"
@@ -48,7 +49,7 @@ func testGetPagination(t *testing.T, api *api.API, txsPages, additionalTxs int) 
 						{
 							Source:      "world",
 							Destination: fmt.Sprintf("accounts:%06d", i),
-							Amount:      core.NewMonetaryInt(10),
+							Amount:      monetary.NewInt(10),
 							Asset:       "USD",
 						},
 					},
