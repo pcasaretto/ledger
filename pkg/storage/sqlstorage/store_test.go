@@ -390,6 +390,16 @@ func testTransactions(t *testing.T, store *sqlstorage.Store) {
 
 		cursor, err = store.GetTransactions(context.Background(), storage.TransactionsQuery{
 			Filters: storage.TransactionsQueryFilters{
+				Account: "users:.*",
+			},
+			PageSize: 10,
+		})
+		assert.NoError(t, err)
+		assert.Equal(t, 10, cursor.PageSize)
+		assert.Len(t, cursor.Data, 1)
+
+		cursor, err = store.GetTransactions(context.Background(), storage.TransactionsQuery{
+			Filters: storage.TransactionsQueryFilters{
 				Source: "central_bank",
 			},
 			PageSize: 10,
@@ -402,6 +412,39 @@ func testTransactions(t *testing.T, store *sqlstorage.Store) {
 		cursor, err = store.GetTransactions(context.Background(), storage.TransactionsQuery{
 			Filters: storage.TransactionsQueryFilters{
 				Destination: "users:1",
+			},
+			PageSize: 10,
+		})
+		assert.NoError(t, err)
+		assert.Equal(t, 10, cursor.PageSize)
+		// Should get only the third transaction.
+		assert.Len(t, cursor.Data, 1)
+
+		cursor, err = store.GetTransactions(context.Background(), storage.TransactionsQuery{
+			Filters: storage.TransactionsQueryFilters{
+				Destination: "users:.*", // Use regex
+			},
+			PageSize: 10,
+		})
+		assert.NoError(t, err)
+		assert.Equal(t, 10, cursor.PageSize)
+		// Should get only the third transaction.
+		assert.Len(t, cursor.Data, 1)
+
+		cursor, err = store.GetTransactions(context.Background(), storage.TransactionsQuery{
+			Filters: storage.TransactionsQueryFilters{
+				Destination: ".*:1", // Use regex
+			},
+			PageSize: 10,
+		})
+		assert.NoError(t, err)
+		assert.Equal(t, 10, cursor.PageSize)
+		// Should get only the third transaction.
+		assert.Len(t, cursor.Data, 1)
+
+		cursor, err = store.GetTransactions(context.Background(), storage.TransactionsQuery{
+			Filters: storage.TransactionsQueryFilters{
+				Source: ".*bank", // Use regex
 			},
 			PageSize: 10,
 		})
