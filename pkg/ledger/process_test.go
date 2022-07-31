@@ -13,13 +13,13 @@ import (
 func TestLedger_processTx(t *testing.T) {
 	runOnLedger(func(l *Ledger) {
 		t.Run("multi assets", func(t *testing.T) {
-			const (
-				worldTotoUSD  int64 = 43
-				worldAliceUSD int64 = 98
-				aliceTotoUSD  int64 = 45
-				worldTotoEUR  int64 = 15
-				worldAliceEUR int64 = 10
-				totoAliceEUR  int64 = 5
+			var (
+				worldTotoUSD  core.MonetaryInt = core.NewMonetaryInt(43)
+				worldAliceUSD core.MonetaryInt = core.NewMonetaryInt(98)
+				aliceTotoUSD  core.MonetaryInt = core.NewMonetaryInt(45)
+				worldTotoEUR  core.MonetaryInt = core.NewMonetaryInt(15)
+				worldAliceEUR core.MonetaryInt = core.NewMonetaryInt(10)
+				totoAliceEUR  core.MonetaryInt = core.NewMonetaryInt(5)
 			)
 
 			postings := []core.Posting{
@@ -83,12 +83,12 @@ func TestLedger_processTx(t *testing.T) {
 						Output: aliceTotoUSD,
 					},
 					"EUR": {
-						Input: worldAliceEUR + totoAliceEUR,
+						Input: core.AddMonetaryInt(worldAliceEUR, totoAliceEUR),
 					},
 				},
 				"toto": core.AssetsVolumes{
 					"USD": {
-						Input: worldTotoUSD + aliceTotoUSD,
+						Input: core.AddMonetaryInt(worldTotoUSD, aliceTotoUSD),
 					},
 					"EUR": {
 						Input:  worldTotoEUR,
@@ -97,10 +97,10 @@ func TestLedger_processTx(t *testing.T) {
 				},
 				"world": core.AssetsVolumes{
 					"USD": {
-						Output: worldTotoUSD + worldAliceUSD,
+						Output: core.AddMonetaryInt(worldTotoUSD, worldAliceUSD),
 					},
 					"EUR": {
-						Output: worldTotoEUR + worldAliceEUR,
+						Output: core.AddMonetaryInt(worldTotoEUR, worldAliceEUR),
 					},
 				},
 			}
@@ -181,11 +181,23 @@ func TestLedger_processTx(t *testing.T) {
 						},
 						ID: 0,
 						PreCommitVolumes: core.AccountsAssetsVolumes{
-							"toto":  core.AssetsVolumes{"USD": core.Volumes{Input: 0, Output: 0}},
-							"world": core.AssetsVolumes{"USD": core.Volumes{Input: 0, Output: 0}}},
+							"toto": core.AssetsVolumes{"USD": core.Volumes{
+								Input:  core.NewMonetaryInt(0),
+								Output: core.NewMonetaryInt(0),
+							}},
+							"world": core.AssetsVolumes{"USD": core.Volumes{
+								Input:  core.NewMonetaryInt(0),
+								Output: core.NewMonetaryInt(0),
+							}}},
 						PostCommitVolumes: core.AccountsAssetsVolumes{
-							"toto":  core.AssetsVolumes{"USD": core.Volumes{Input: worldTotoUSD, Output: 0}},
-							"world": core.AssetsVolumes{"USD": core.Volumes{Input: 0, Output: worldTotoUSD}}},
+							"toto": core.AssetsVolumes{"USD": core.Volumes{
+								Input:  worldTotoUSD,
+								Output: core.NewMonetaryInt(0),
+							}},
+							"world": core.AssetsVolumes{"USD": core.Volumes{
+								Input:  core.NewMonetaryInt(0),
+								Output: worldTotoUSD,
+							}}},
 					},
 					{
 						TransactionData: core.TransactionData{
@@ -194,12 +206,24 @@ func TestLedger_processTx(t *testing.T) {
 						},
 						ID: 1,
 						PreCommitVolumes: core.AccountsAssetsVolumes{
-							"world": core.AssetsVolumes{"USD": core.Volumes{Input: 0, Output: worldTotoUSD}},
-							"alice": core.AssetsVolumes{"USD": core.Volumes{Input: 0, Output: 0}},
+							"world": core.AssetsVolumes{"USD": core.Volumes{
+								Input:  core.NewMonetaryInt(0),
+								Output: worldTotoUSD,
+							}},
+							"alice": core.AssetsVolumes{"USD": core.Volumes{
+								Input:  core.NewMonetaryInt(0),
+								Output: core.NewMonetaryInt(0),
+							}},
 						},
 						PostCommitVolumes: core.AccountsAssetsVolumes{
-							"world": core.AssetsVolumes{"USD": core.Volumes{Input: 0, Output: worldTotoUSD + worldAliceUSD}},
-							"alice": core.AssetsVolumes{"USD": core.Volumes{Input: worldAliceUSD, Output: 0}},
+							"world": core.AssetsVolumes{"USD": core.Volumes{
+								Input:  core.NewMonetaryInt(0),
+								Output: core.AddMonetaryInt(worldTotoUSD, worldAliceUSD),
+							}},
+							"alice": core.AssetsVolumes{"USD": core.Volumes{
+								Input:  worldAliceUSD,
+								Output: core.NewMonetaryInt(0),
+							}},
 						},
 					},
 					{
@@ -209,12 +233,24 @@ func TestLedger_processTx(t *testing.T) {
 						},
 						ID: 2,
 						PreCommitVolumes: core.AccountsAssetsVolumes{
-							"alice": core.AssetsVolumes{"USD": core.Volumes{Input: worldAliceUSD, Output: 0}},
-							"toto":  core.AssetsVolumes{"USD": core.Volumes{Input: worldTotoUSD, Output: 0}},
+							"alice": core.AssetsVolumes{"USD": core.Volumes{
+								Input:  worldAliceUSD,
+								Output: core.NewMonetaryInt(0),
+							}},
+							"toto": core.AssetsVolumes{"USD": core.Volumes{
+								Input:  worldTotoUSD,
+								Output: core.NewMonetaryInt(0),
+							}},
 						},
 						PostCommitVolumes: core.AccountsAssetsVolumes{
-							"alice": core.AssetsVolumes{"USD": core.Volumes{Input: worldAliceUSD, Output: aliceTotoUSD}},
-							"toto":  core.AssetsVolumes{"USD": core.Volumes{Input: worldTotoUSD + aliceTotoUSD, Output: 0}},
+							"alice": core.AssetsVolumes{"USD": core.Volumes{
+								Input:  worldAliceUSD,
+								Output: aliceTotoUSD,
+							}},
+							"toto": core.AssetsVolumes{"USD": core.Volumes{
+								Input:  core.AddMonetaryInt(worldTotoUSD, aliceTotoUSD),
+								Output: core.NewMonetaryInt(0),
+							}},
 						},
 					},
 					{
@@ -224,12 +260,24 @@ func TestLedger_processTx(t *testing.T) {
 						},
 						ID: 3,
 						PreCommitVolumes: core.AccountsAssetsVolumes{
-							"world": core.AssetsVolumes{"EUR": core.Volumes{Input: 0, Output: 0}},
-							"toto":  core.AssetsVolumes{"EUR": core.Volumes{Input: 0, Output: 0}},
+							"world": core.AssetsVolumes{"EUR": core.Volumes{
+								Input:  core.NewMonetaryInt(0),
+								Output: core.NewMonetaryInt(0),
+							}},
+							"toto": core.AssetsVolumes{"EUR": core.Volumes{
+								Input:  core.NewMonetaryInt(0),
+								Output: core.NewMonetaryInt(0),
+							}},
 						},
 						PostCommitVolumes: core.AccountsAssetsVolumes{
-							"world": core.AssetsVolumes{"EUR": core.Volumes{Input: 0, Output: worldTotoEUR}},
-							"toto":  core.AssetsVolumes{"EUR": core.Volumes{Input: worldTotoEUR, Output: 0}},
+							"world": core.AssetsVolumes{"EUR": core.Volumes{
+								Input:  core.NewMonetaryInt(0),
+								Output: worldTotoEUR,
+							}},
+							"toto": core.AssetsVolumes{"EUR": core.Volumes{
+								Input:  worldTotoEUR,
+								Output: core.NewMonetaryInt(0),
+							}},
 						},
 					},
 					{
@@ -239,12 +287,24 @@ func TestLedger_processTx(t *testing.T) {
 						},
 						ID: 4,
 						PreCommitVolumes: core.AccountsAssetsVolumes{
-							"world": core.AssetsVolumes{"EUR": core.Volumes{Input: 0, Output: worldTotoEUR}},
-							"alice": core.AssetsVolumes{"EUR": core.Volumes{Input: 0, Output: 0}},
+							"world": core.AssetsVolumes{"EUR": core.Volumes{
+								Input:  core.NewMonetaryInt(0),
+								Output: worldTotoEUR,
+							}},
+							"alice": core.AssetsVolumes{"EUR": core.Volumes{
+								Input:  core.NewMonetaryInt(0),
+								Output: core.NewMonetaryInt(0),
+							}},
 						},
 						PostCommitVolumes: core.AccountsAssetsVolumes{
-							"world": core.AssetsVolumes{"EUR": core.Volumes{Input: 0, Output: worldTotoEUR + worldAliceEUR}},
-							"alice": core.AssetsVolumes{"EUR": core.Volumes{Input: worldAliceEUR, Output: 0}},
+							"world": core.AssetsVolumes{"EUR": core.Volumes{
+								Input:  core.NewMonetaryInt(0),
+								Output: core.AddMonetaryInt(worldTotoEUR, worldAliceEUR),
+							}},
+							"alice": core.AssetsVolumes{"EUR": core.Volumes{
+								Input:  worldAliceEUR,
+								Output: core.NewMonetaryInt(0),
+							}},
 						},
 					},
 					{
@@ -254,12 +314,24 @@ func TestLedger_processTx(t *testing.T) {
 						},
 						ID: 5,
 						PreCommitVolumes: core.AccountsAssetsVolumes{
-							"toto":  core.AssetsVolumes{"EUR": core.Volumes{Input: worldTotoEUR, Output: 0}},
-							"alice": core.AssetsVolumes{"EUR": core.Volumes{Input: worldAliceEUR, Output: 0}},
+							"toto": core.AssetsVolumes{"EUR": core.Volumes{
+								Input:  worldTotoEUR,
+								Output: core.NewMonetaryInt(0),
+							}},
+							"alice": core.AssetsVolumes{"EUR": core.Volumes{
+								Input:  worldAliceEUR,
+								Output: core.NewMonetaryInt(0),
+							}},
 						},
 						PostCommitVolumes: core.AccountsAssetsVolumes{
-							"toto":  core.AssetsVolumes{"EUR": core.Volumes{Input: worldTotoEUR, Output: totoAliceEUR}},
-							"alice": core.AssetsVolumes{"EUR": core.Volumes{Input: worldAliceEUR + totoAliceEUR, Output: 0}},
+							"toto": core.AssetsVolumes{"EUR": core.Volumes{
+								Input:  worldTotoEUR,
+								Output: totoAliceEUR,
+							}},
+							"alice": core.AssetsVolumes{"EUR": core.Volumes{
+								Input:  core.AddMonetaryInt(worldAliceEUR, totoAliceEUR),
+								Output: core.NewMonetaryInt(0),
+							}},
 						},
 					},
 				}
@@ -341,7 +413,7 @@ func TestLedger_processTx(t *testing.T) {
 					Postings: []core.Posting{{
 						Source:      "world",
 						Destination: "bank",
-						Amount:      100,
+						Amount:      core.NewMonetaryInt(100),
 						Asset:       "USD",
 					}},
 					Timestamp: now.Add(-time.Second),

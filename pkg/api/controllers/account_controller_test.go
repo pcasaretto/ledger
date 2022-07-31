@@ -30,7 +30,7 @@ func TestGetAccounts(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "alice",
-							Amount:      150,
+							Amount:      core.NewMonetaryInt(150),
 							Asset:       "USD",
 						},
 					},
@@ -42,7 +42,7 @@ func TestGetAccounts(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "bob",
-							Amount:      100,
+							Amount:      core.NewMonetaryInt(100),
 							Asset:       "USD",
 						},
 					},
@@ -425,7 +425,7 @@ func TestGetAccount(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "alice",
-							Amount:      100,
+							Amount:      core.NewMonetaryInt(100),
 							Asset:       "USD",
 						},
 					},
@@ -451,11 +451,11 @@ func TestGetAccount(t *testing.T) {
 							},
 						},
 						Balances: core.AssetsBalances{
-							"USD": 100,
+							"USD": core.NewMonetaryInt(100),
 						},
 						Volumes: core.AssetsVolumes{
 							"USD": {
-								Input: 100,
+								Input: core.NewMonetaryInt(100),
 							},
 						},
 					}, resp)
@@ -502,7 +502,7 @@ func TestPostAccountMetadata(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "alice",
-							Amount:      100,
+							Amount:      core.NewMonetaryInt(100),
 							Asset:       "USD",
 						},
 					},

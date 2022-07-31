@@ -68,10 +68,10 @@ func (l *Ledger) execute(ctx context.Context, script core.Script) (*core.Transac
 				return nil, fmt.Errorf("could not get account %q: %v", req.Account, err)
 			}
 			amt := account.Balances[req.Asset]
-			if amt < 0 {
-				amt = 0
+			if core.LtMonetaryInt(amt, core.MonetaryIntZero) {
+				amt = core.MonetaryIntZero
 			}
-			req.Response <- uint64(amt)
+			req.Response <- uint64(amt.Int64())
 		}
 	}
 

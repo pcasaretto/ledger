@@ -17,7 +17,7 @@ import (
 
 func (s *Store) getBalancesAggregated(ctx context.Context, exec executor, q storage.BalancesQuery) (core.AssetsBalances, error) {
 	sb := sqlbuilder.NewSelectBuilder()
-	sb.Select("asset", "sum(input - output)")
+	sb.Select("asset", "sum(input - output)::numeric(100, 0)")
 	sb.From(s.schema.Table("volumes"))
 	sb.GroupBy("asset")
 
@@ -48,13 +48,13 @@ func (s *Store) getBalancesAggregated(ctx context.Context, exec executor, q stor
 	for rows.Next() {
 		var (
 			asset    string
-			balances int64
+			balances string
 		)
 		if err = rows.Scan(&asset, &balances); err != nil {
 			return nil, s.error(err)
 		}
 
-		aggregatedBalances[asset] = balances
+		aggregatedBalances[asset] = core.ParseMonetaryInt(balances)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, s.error(err)
@@ -140,7 +140,7 @@ func (s *Store) getBalances(ctx context.Context, exec executor, q storage.Balanc
 			if err != nil {
 				return sharedapi.Cursor[core.AccountsBalances]{}, s.error(err)
 			}
-			accountsBalances[currentAccount][asset] = balances
+			accountsBalances[currentAccount][asset] = core.NewMonetaryInt(balances)
 		}
 
 		accounts = append(accounts, accountsBalances)

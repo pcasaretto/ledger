@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS "VAR_LEDGER_NAME".postings (
   "txid"        bigint,
   "source"      varchar,
   "destination" varchar,
-  "amount"      bigint,
+  "amount"      numeric(100, 0),
   "asset"       varchar,
 
   UNIQUE("id", "txid")

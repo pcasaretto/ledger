@@ -2,10 +2,11 @@ package core
 
 import (
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"time"
 
-	json "github.com/gibson042/canonicaljson-go"
+	_ "github.com/gibson042/canonicaljson-go"
 )
 
 type Transactions struct {

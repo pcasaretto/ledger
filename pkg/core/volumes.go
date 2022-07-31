@@ -6,29 +6,29 @@ import (
 )
 
 type Volumes struct {
-	Input  int64 `json:"input"`
-	Output int64 `json:"output"`
+	Input  MonetaryInt `json:"input"`
+	Output MonetaryInt `json:"output"`
 }
 
 type VolumesWithBalance struct {
-	Input   int64 `json:"input"`
-	Output  int64 `json:"output"`
-	Balance int64 `json:"balance"`
+	Input   MonetaryInt `json:"input"`
+	Output  MonetaryInt `json:"output"`
+	Balance MonetaryInt `json:"balance"`
 }
 
 func (v Volumes) MarshalJSON() ([]byte, error) {
 	return json.Marshal(VolumesWithBalance{
 		Input:   v.Input,
 		Output:  v.Output,
-		Balance: v.Input - v.Output,
+		Balance: SubMonetaryInt(v.Input, v.Output),
 	})
 }
 
-func (v Volumes) Balance() int64 {
-	return v.Input - v.Output
+func (v Volumes) Balance() MonetaryInt {
+	return SubMonetaryInt(v.Input, v.Output)
 }
 
-type AssetsBalances map[string]int64
+type AssetsBalances map[string]MonetaryInt
 type AssetsVolumes map[string]Volumes
 
 type AccountsBalances map[string]AssetsBalances
@@ -36,7 +36,7 @@ type AccountsBalances map[string]AssetsBalances
 func (v AssetsVolumes) Balances() AssetsBalances {
 	balances := AssetsBalances{}
 	for asset, vv := range v {
-		balances[asset] = vv.Input - vv.Output
+		balances[asset] = SubMonetaryInt(vv.Input, vv.Output)
 	}
 	return balances
 }
@@ -61,7 +61,7 @@ func (a AccountsAssetsVolumes) SetVolumes(account, asset string, volumes Volumes
 	}
 }
 
-func (a AccountsAssetsVolumes) AddInput(account, asset string, input int64) {
+func (a AccountsAssetsVolumes) AddInput(account, asset string, input MonetaryInt) {
 	if assetsVolumes, ok := a[account]; !ok {
 		a[account] = map[string]Volumes{
 			asset: {
@@ -70,12 +70,12 @@ func (a AccountsAssetsVolumes) AddInput(account, asset string, input int64) {
 		}
 	} else {
 		volumes := assetsVolumes[asset]
-		volumes.Input += input
+		volumes.Input = AddMonetaryInt(input, volumes.Input)
 		assetsVolumes[asset] = volumes
 	}
 }
 
-func (a AccountsAssetsVolumes) AddOutput(account, asset string, output int64) {
+func (a AccountsAssetsVolumes) AddOutput(account, asset string, output MonetaryInt) {
 	if assetsVolumes, ok := a[account]; !ok {
 		a[account] = map[string]Volumes{
 			asset: {
@@ -84,7 +84,7 @@ func (a AccountsAssetsVolumes) AddOutput(account, asset string, output int64) {
 		}
 	} else {
 		volumes := assetsVolumes[asset]
-		volumes.Output += output
+		volumes.Output = AddMonetaryInt(output, volumes.Output)
 		assetsVolumes[asset] = volumes
 	}
 }

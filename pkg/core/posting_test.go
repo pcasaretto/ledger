@@ -10,29 +10,29 @@ func TestReverseMultiple(t *testing.T) {
 	p := Postings{
 		{
 			Source:      "world",
-			Destination: "users:001",
-			Amount:      100,
+			Destination: "users:NewMonetaryInt(00)1",
+			Amount:      NewMonetaryInt(100),
 			Asset:       "COIN",
 		},
 		{
-			Source:      "users:001",
-			Destination: "payments:001",
-			Amount:      100,
+			Source:      "users:NewMonetaryInt(00)1",
+			Destination: "payments:NewMonetaryInt(00)1",
+			Amount:      NewMonetaryInt(100),
 			Asset:       "COIN",
 		},
 	}
 
 	expected := Postings{
 		{
-			Source:      "payments:001",
-			Destination: "users:001",
-			Amount:      100,
+			Source:      "payments:NewMonetaryInt(00)1",
+			Destination: "users:NewMonetaryInt(00)1",
+			Amount:      NewMonetaryInt(100),
 			Asset:       "COIN",
 		},
 		{
-			Source:      "users:001",
+			Source:      "users:NewMonetaryInt(00)1",
 			Destination: "world",
-			Amount:      100,
+			Amount:      NewMonetaryInt(100),
 			Asset:       "COIN",
 		},
 	}
@@ -48,17 +48,17 @@ func TestReverseSingle(t *testing.T) {
 	p := Postings{
 		{
 			Source:      "world",
-			Destination: "users:001",
-			Amount:      100,
+			Destination: "users:NewMonetaryInt(00)1",
+			Amount:      NewMonetaryInt(100),
 			Asset:       "COIN",
 		},
 	}
 
 	expected := Postings{
 		{
-			Source:      "users:001",
+			Source:      "users:NewMonetaryInt(00)1",
 			Destination: "world",
-			Amount:      100,
+			Amount:      NewMonetaryInt(100),
 			Asset:       "COIN",
 		},
 	}

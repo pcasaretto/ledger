@@ -61,16 +61,16 @@ func (s *Store) getAssetsVolumes(ctx context.Context, exec executor, accountAddr
 	for rows.Next() {
 		var (
 			asset  string
-			input  int64
-			output int64
+			input  string
+			output string
 		)
 		err = rows.Scan(&asset, &input, &output)
 		if err != nil {
 			return nil, s.error(err)
 		}
 		volumes[asset] = core.Volumes{
-			Input:  input,
-			Output: output,
+			Input:  core.ParseMonetaryInt(input),
+			Output: core.ParseMonetaryInt(output),
 		}
 	}
 	if err := rows.Err(); err != nil {
@@ -96,7 +96,7 @@ func (s *Store) getVolumes(ctx context.Context, exec executor, accountAddress, a
 		return core.Volumes{}, s.error(row.Err())
 	}
 
-	var input, output int64
+	var input, output string
 	if err := row.Scan(&input, &output); err != nil {
 		if err == sql.ErrNoRows {
 			return core.Volumes{}, nil
@@ -105,8 +105,8 @@ func (s *Store) getVolumes(ctx context.Context, exec executor, accountAddress, a
 	}
 
 	return core.Volumes{
-		Input:  input,
-		Output: output,
+		Input:  core.ParseMonetaryInt(input),
+		Output: core.ParseMonetaryInt(output),
 	}, nil
 }
 

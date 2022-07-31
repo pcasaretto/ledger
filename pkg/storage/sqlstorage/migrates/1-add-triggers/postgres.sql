@@ -50,8 +50,8 @@ CREATE TABLE IF NOT EXISTS "VAR_LEDGER_NAME".volumes
 (
     "account" varchar,
     "asset"   varchar,
-    "input"   bigint,
-    "output"  bigint,
+    "input"   numeric(100, 0),
+    "output"  numeric(100, 0),
 
     UNIQUE ("account", "asset")
 );
@@ -168,7 +168,7 @@ BEGIN
         SELECT
                 t.postings->>'source' as source,
                 t.postings->>'asset' as asset,
-                sum ((t.postings->>'amount')::bigint) as amount
+                sum ((t.postings->>'amount')::numeric(100, 0)) as amount
         FROM (
                  SELECT jsonb_array_elements(((newtable.data::jsonb)->>'postings')::jsonb) as postings
                  FROM newtable
@@ -181,8 +181,8 @@ BEGIN
             ON CONFLICT DO NOTHING;
 
             INSERT INTO "VAR_LEDGER_NAME".volumes (account, asset, input, output)
-            VALUES (p.source, p.asset, 0, p.amount::bigint)
-            ON CONFLICT (account, asset) DO UPDATE SET output = p.amount::bigint + (
+            VALUES (p.source, p.asset, 0, p.amount::numeric(100, 0))
+            ON CONFLICT (account, asset) DO UPDATE SET output = p.amount::numeric(100, 0) + (
                 SELECT output
                 FROM "VAR_LEDGER_NAME".volumes
                 WHERE account = p.source
@@ -193,7 +193,7 @@ BEGIN
         SELECT
                 t.postings->>'destination' as destination,
                 t.postings->>'asset' as asset,
-                sum ((t.postings->>'amount')::bigint) as amount
+                sum ((t.postings->>'amount')::numeric(100, 0)) as amount
         FROM (
                  SELECT jsonb_array_elements(((newtable.data::jsonb)->>'postings')::jsonb) as postings
                  FROM newtable
@@ -206,8 +206,8 @@ BEGIN
             ON CONFLICT DO NOTHING;
 
             INSERT INTO "VAR_LEDGER_NAME".volumes (account, asset, input, output)
-            VALUES (p.destination, p.asset, p.amount::bigint, 0)
-            ON CONFLICT (account, asset) DO UPDATE SET input = p.amount::bigint + (
+            VALUES (p.destination, p.asset, p.amount::numeric(100, 0), 0)
+            ON CONFLICT (account, asset) DO UPDATE SET input = p.amount::numeric(100, 0) + (
                 SELECT input
                 FROM "VAR_LEDGER_NAME".volumes
                 WHERE account = p.destination
@@ -259,7 +259,7 @@ BEGIN
         return v::text;
     end if;
     if jsonb_typeof(v) = 'number' then
-        return v::bigint;
+        return v::numeric(100, 0);
     end if;
     if jsonb_typeof(v) = 'boolean' then
         return v::boolean;

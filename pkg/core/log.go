@@ -1,11 +1,12 @@
 package core
 
 import (
+	"encoding/json"
 	"strconv"
 	"strings"
 	"time"
 
-	json "github.com/gibson042/canonicaljson-go"
+	_ "github.com/gibson042/canonicaljson-go"
 )
 
 const SetMetadataType = "SET_METADATA"
@@ -24,15 +25,24 @@ func (m LoggedTX) MarshalJSON() ([]byte, error) {
 		metadata[k] = i
 	}
 	type transaction Transaction
-	return json.Marshal(struct {
+
+	tx := transaction(m)
+
+	for i, p := range tx.Postings {
+		tx.Postings[i].Amount = ParseMonetaryInt(p.Amount.String())
+	}
+
+	b, err := json.Marshal(struct {
 		transaction
 		Metadata  map[string]interface{} `json:"metadata"`
 		Timestamp string                 `json:"timestamp"`
 	}{
-		transaction: transaction(m),
+		transaction: tx,
 		Metadata:    metadata,
 		Timestamp:   m.Timestamp.Format(time.RFC3339),
 	})
+
+	return b, err
 }
 
 type Log struct {

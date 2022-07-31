@@ -47,7 +47,7 @@ func TestPostTransactions(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "central_bank",
-							Amount:      1000,
+							Amount:      core.NewMonetaryInt(1000),
 							Asset:       "USB",
 						},
 					},
@@ -74,7 +74,7 @@ func TestPostTransactions(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "central_bank",
-							Amount:      -1000,
+							Amount:      core.NewMonetaryInt(-1000),
 							Asset:       "USB",
 						},
 					},
@@ -91,7 +91,7 @@ func TestPostTransactions(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "central_bank",
-							Amount:      1000,
+							Amount:      core.NewMonetaryInt(1000),
 							Asset:       "@TOK",
 						},
 					},
@@ -108,7 +108,7 @@ func TestPostTransactions(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "#fake",
-							Amount:      1000,
+							Amount:      core.NewMonetaryInt(1000),
 							Asset:       "TOK",
 						},
 					},
@@ -125,7 +125,7 @@ func TestPostTransactions(t *testing.T) {
 						{
 							Source:      "foo",
 							Destination: "bar",
-							Amount:      1000,
+							Amount:      core.NewMonetaryInt(1000),
 							Asset:       "TOK",
 						},
 					},
@@ -142,7 +142,7 @@ func TestPostTransactions(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "bar",
-							Amount:      1000,
+							Amount:      core.NewMonetaryInt(1000),
 							Asset:       "TOK",
 						},
 					},
@@ -153,7 +153,7 @@ func TestPostTransactions(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "bar",
-							Amount:      1000,
+							Amount:      core.NewMonetaryInt(1000),
 							Asset:       "TOK",
 						},
 					},
@@ -170,7 +170,7 @@ func TestPostTransactions(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "bar",
-							Amount:      1000,
+							Amount:      core.NewMonetaryInt(1000),
 							Asset:       "TOK",
 						},
 					},
@@ -188,7 +188,7 @@ func TestPostTransactions(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "bar",
-							Amount:      1000,
+							Amount:      core.NewMonetaryInt(1000),
 							Asset:       "TOK",
 						},
 					},
@@ -199,7 +199,7 @@ func TestPostTransactions(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "bar",
-							Amount:      1000,
+							Amount:      core.NewMonetaryInt(1000),
 							Asset:       "TOK",
 						},
 					},
@@ -280,7 +280,7 @@ func TestGetTransaction(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "central_bank",
-							Amount:      1000,
+							Amount:      core.NewMonetaryInt(1000),
 							Asset:       "USD",
 						},
 					},
@@ -297,7 +297,7 @@ func TestGetTransaction(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "central_bank",
-							Amount:      1000,
+							Amount:      core.NewMonetaryInt(1000),
 							Asset:       "USD",
 						},
 					}, ret.Postings)
@@ -316,12 +316,12 @@ func TestGetTransaction(t *testing.T) {
 					assert.EqualValues(t, core.AccountsAssetsVolumes{
 						"world": core.AssetsVolumes{
 							"USD": {
-								Output: 1000,
+								Output: core.NewMonetaryInt(1000),
 							},
 						},
 						"central_bank": core.AssetsVolumes{
 							"USD": {
-								Input: 1000,
+								Input: core.NewMonetaryInt(1000),
 							},
 						},
 					}, ret.PostCommitVolumes)
@@ -366,7 +366,7 @@ func TestPreviewTransaction(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "central_bank",
-							Amount:      1000,
+							Amount:      core.NewMonetaryInt(1000),
 							Asset:       "USD",
 						},
 					},
@@ -390,7 +390,7 @@ func TestGetTransactions(t *testing.T) {
 							{
 								Source:      "world",
 								Destination: "central_bank1",
-								Amount:      1000,
+								Amount:      core.NewMonetaryInt(1000),
 								Asset:       "USD",
 							},
 						},
@@ -405,7 +405,7 @@ func TestGetTransactions(t *testing.T) {
 							{
 								Source:      "world",
 								Destination: "central_bank2",
-								Amount:      1000,
+								Amount:      core.NewMonetaryInt(1000),
 								Asset:       "USD",
 							},
 						},
@@ -423,7 +423,7 @@ func TestGetTransactions(t *testing.T) {
 							{
 								Source:      "central_bank1",
 								Destination: "alice",
-								Amount:      10,
+								Amount:      core.NewMonetaryInt(10),
 								Asset:       "USD",
 							},
 						},
@@ -677,7 +677,7 @@ func TestGetTransactionsWithPageSize(t *testing.T) {
 								{
 									Source:      "world",
 									Destination: fmt.Sprintf("account:%d", i),
-									Amount:      1000,
+									Amount:      core.NewMonetaryInt(1000),
 									Asset:       "USD",
 								},
 							},
@@ -761,7 +761,7 @@ func TestTransactionsVolumes(t *testing.T) {
 			OnStart: func(ctx context.Context) error {
 
 				// Single posting - single asset
-				const worldAliceUSD int64 = 100
+				var worldAliceUSD core.MonetaryInt = core.NewMonetaryInt(100)
 
 				rsp := internal.PostTransaction(t, api,
 					core.TransactionData{
@@ -798,7 +798,7 @@ func TestTransactionsVolumes(t *testing.T) {
 					"world": assetsVolumes{
 						"USD": core.VolumesWithBalance{
 							Output:  worldAliceUSD,
-							Balance: -worldAliceUSD,
+							Balance: core.NegMonetaryInt(worldAliceUSD),
 						},
 					},
 				}
@@ -818,7 +818,7 @@ func TestTransactionsVolumes(t *testing.T) {
 
 				// Single posting - single asset
 
-				const aliceBobUSD int64 = 93
+				var aliceBobUSD core.MonetaryInt = core.NewMonetaryInt(93)
 
 				rsp = internal.PostTransaction(t, api,
 					core.TransactionData{
@@ -848,9 +848,12 @@ func TestTransactionsVolumes(t *testing.T) {
 				expPostVolumes = accountsVolumes{
 					"alice": assetsVolumes{
 						"USD": core.VolumesWithBalance{
-							Input:   prevVolAliceUSD.Input,
-							Output:  prevVolAliceUSD.Output + aliceBobUSD,
-							Balance: prevVolAliceUSD.Input - prevVolAliceUSD.Output - aliceBobUSD,
+							Input:  prevVolAliceUSD.Input,
+							Output: core.AddMonetaryInt(prevVolAliceUSD.Output, aliceBobUSD),
+							Balance: core.SubMonetaryInt(
+								core.SubMonetaryInt(prevVolAliceUSD.Input, prevVolAliceUSD.Output),
+								aliceBobUSD,
+							),
 						},
 					},
 					"bob": assetsVolumes{
@@ -877,8 +880,8 @@ func TestTransactionsVolumes(t *testing.T) {
 
 				// Multi posting - single asset
 
-				const worldBobEUR int64 = 156
-				const bobAliceEUR int64 = 3
+				var worldBobEUR core.MonetaryInt = core.NewMonetaryInt(156)
+				var bobAliceEUR core.MonetaryInt = core.NewMonetaryInt(3)
 
 				rsp = internal.PostTransaction(t, api,
 					core.TransactionData{
@@ -918,7 +921,7 @@ func TestTransactionsVolumes(t *testing.T) {
 					"alice": assetsVolumes{
 						"EUR": core.VolumesWithBalance{
 							Input:   bobAliceEUR,
-							Output:  0,
+							Output:  core.NewMonetaryInt(0),
 							Balance: bobAliceEUR,
 						},
 					},
@@ -926,14 +929,14 @@ func TestTransactionsVolumes(t *testing.T) {
 						"EUR": core.VolumesWithBalance{
 							Input:   worldBobEUR,
 							Output:  bobAliceEUR,
-							Balance: worldBobEUR - bobAliceEUR,
+							Balance: core.SubMonetaryInt(worldBobEUR, bobAliceEUR),
 						},
 					},
 					"world": assetsVolumes{
 						"EUR": core.VolumesWithBalance{
-							Input:   0,
+							Input:   core.NewMonetaryInt(0),
 							Output:  worldBobEUR,
-							Balance: -worldBobEUR,
+							Balance: core.NegMonetaryInt(worldBobEUR),
 						},
 					},
 				}
@@ -954,8 +957,8 @@ func TestTransactionsVolumes(t *testing.T) {
 
 				// Multi postings - multi assets
 
-				const bobAliceUSD int64 = 1
-				const aliceBobEUR int64 = 2
+				var bobAliceUSD core.MonetaryInt = core.NewMonetaryInt(1)
+				var aliceBobEUR core.MonetaryInt = core.NewMonetaryInt(2)
 
 				rsp = internal.PostTransaction(t, api,
 					core.TransactionData{
@@ -994,25 +997,25 @@ func TestTransactionsVolumes(t *testing.T) {
 					"alice": assetsVolumes{
 						"EUR": core.VolumesWithBalance{
 							Input:   prevVolAliceEUR.Input,
-							Output:  prevVolAliceEUR.Output + aliceBobEUR,
-							Balance: prevVolAliceEUR.Balance - aliceBobEUR,
+							Output:  core.AddMonetaryInt(prevVolAliceEUR.Output, aliceBobEUR),
+							Balance: core.SubMonetaryInt(prevVolAliceEUR.Balance, aliceBobEUR),
 						},
 						"USD": core.VolumesWithBalance{
-							Input:   prevVolAliceUSD.Input + bobAliceUSD,
+							Input:   core.AddMonetaryInt(prevVolAliceUSD.Input, bobAliceUSD),
 							Output:  prevVolAliceUSD.Output,
-							Balance: prevVolAliceUSD.Balance + bobAliceUSD,
+							Balance: core.AddMonetaryInt(prevVolAliceUSD.Balance, bobAliceUSD),
 						},
 					},
 					"bob": assetsVolumes{
 						"EUR": core.VolumesWithBalance{
-							Input:   prevVolBobEUR.Input + aliceBobEUR,
+							Input:   core.AddMonetaryInt(prevVolBobEUR.Input, aliceBobEUR),
 							Output:  prevVolBobEUR.Output,
-							Balance: prevVolBobEUR.Balance + aliceBobEUR,
+							Balance: core.AddMonetaryInt(prevVolBobEUR.Balance, aliceBobEUR),
 						},
 						"USD": core.VolumesWithBalance{
 							Input:   prevVolBobUSD.Input,
-							Output:  prevVolBobUSD.Output + bobAliceUSD,
-							Balance: prevVolBobUSD.Balance - bobAliceUSD,
+							Output:  core.AddMonetaryInt(prevVolBobUSD.Output, bobAliceUSD),
+							Balance: core.SubMonetaryInt(prevVolBobUSD.Balance, bobAliceUSD),
 						},
 					},
 				}
@@ -1043,7 +1046,7 @@ func TestPostTransactionMetadata(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "central_bank",
-							Amount:      1000,
+							Amount:      core.NewMonetaryInt(1000),
 							Asset:       "USD",
 						},
 					},
@@ -1166,7 +1169,7 @@ func TestRevertTransaction(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "alice",
-							Amount:      100,
+							Amount:      core.NewMonetaryInt(100),
 							Asset:       "USD",
 						},
 					},
@@ -1182,7 +1185,7 @@ func TestRevertTransaction(t *testing.T) {
 						{
 							Source:      "world",
 							Destination: "bob",
-							Amount:      100,
+							Amount:      core.NewMonetaryInt(100),
 							Asset:       "USD",
 						},
 					},
@@ -1198,7 +1201,7 @@ func TestRevertTransaction(t *testing.T) {
 						{
 							Source:      "alice",
 							Destination: "bob",
-							Amount:      3,
+							Amount:      core.NewMonetaryInt(3),
 							Asset:       "USD",
 						},
 					},
@@ -1300,7 +1303,7 @@ func TestPostTransactionsBatch(t *testing.T) {
 								{
 									Source:      "world",
 									Destination: "alice",
-									Amount:      100,
+									Amount:      core.NewMonetaryInt(100),
 									Asset:       "USD",
 								},
 							},
@@ -1310,7 +1313,7 @@ func TestPostTransactionsBatch(t *testing.T) {
 								{
 									Source:      "world",
 									Destination: "bob",
-									Amount:      100,
+									Amount:      core.NewMonetaryInt(100),
 									Asset:       "USD",
 								},
 							},
@@ -1335,7 +1338,7 @@ func TestPostTransactionsBatch(t *testing.T) {
 									{
 										Source:      "world",
 										Destination: "alice",
-										Amount:      100,
+										Amount:      core.NewMonetaryInt(100),
 										Asset:       "USD",
 									},
 								},
