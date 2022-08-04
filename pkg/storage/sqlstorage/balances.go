@@ -18,6 +18,7 @@ import (
 
 func (s *Store) getBalancesAggregated(ctx context.Context, exec executor, q storage.BalancesQuery) (core.AssetsBalances, error) {
 	sb := sqlbuilder.NewSelectBuilder()
+	// ::numeric(100, 0)
 	sb.Select("asset", "sum(input - output)::numeric(100, 0)")
 	sb.From(s.schema.Table("volumes"))
 	sb.GroupBy("asset")

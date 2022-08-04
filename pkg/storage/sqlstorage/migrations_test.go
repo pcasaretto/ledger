@@ -37,7 +37,7 @@ var v0CreateTransaction = func(t *testing.T, store *sqlstorage.Store, tx core.Tr
 		sqlx, args = sqlbuilder.NewInsertBuilder().
 			InsertInto(store.Schema().Table("postings")).
 			Cols("txid", "amount", "asset", "destination", "source").
-			Values(tx.ID, p.Amount, p.Asset, p.Destination, p.Source).
+			Values(tx.ID, p.Amount.String(), p.Asset, p.Destination, p.Source).
 			BuildWithFlavor(store.Schema().Flavor())
 		_, err = store.Schema().ExecContext(context.Background(), sqlx, args...)
 		if !assert.NoError(t, err) {

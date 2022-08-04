@@ -8,6 +8,7 @@ import (
 	"github.com/numary/ledger/pkg/api"
 	"github.com/numary/ledger/pkg/api/internal"
 	"github.com/numary/ledger/pkg/core"
+	"github.com/numary/ledger/pkg/core/monetary"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
 )
@@ -21,7 +22,7 @@ func TestMapping(t *testing.T) {
 						{
 							Expr: &core.ExprGt{
 								Op1: core.VariableExpr{Name: "balance"},
-								Op2: core.ConstantExpr{Value: float64(0)},
+								Op2: core.ConstantExpr{Value: monetary.NewInt(0)},
 							},
 							Account: "*",
 						},

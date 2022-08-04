@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/numary/ledger/pkg/core/monetary"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -22,7 +23,7 @@ func TestRules(t *testing.T) {
 				"$or": []interface{}{
 					map[string]interface{}{
 						"$gt": []interface{}{
-							"$balance", float64(0),
+							"$balance", monetary.NewInt(0),
 						},
 					},
 					map[string]interface{}{
@@ -37,7 +38,7 @@ func TestRules(t *testing.T) {
 			},
 			context: EvalContext{
 				Variables: map[string]interface{}{
-					"balance": float64(-10),
+					"balance": monetary.NewInt(-10),
 				},
 				Metadata: map[string]json.RawMessage{
 					"approved": json.RawMessage("yes"),
@@ -50,19 +51,19 @@ func TestRules(t *testing.T) {
 				"$or": []interface{}{
 					map[string]interface{}{
 						"$gte": []interface{}{
-							"$balance", float64(0),
+							"$balance", monetary.NewInt(0),
 						},
 					},
 					map[string]interface{}{
 						"$lte": []interface{}{
-							"$balance", float64(0),
+							"$balance", monetary.NewInt(0),
 						},
 					},
 				},
 			},
 			context: EvalContext{
 				Variables: map[string]interface{}{
-					"balance": float64(-100),
+					"balance": monetary.NewInt(-100),
 				},
 				Metadata: map[string]json.RawMessage{},
 			},
@@ -71,12 +72,12 @@ func TestRules(t *testing.T) {
 		{
 			rule: map[string]interface{}{
 				"$lt": []interface{}{
-					"$balance", float64(0),
+					"$balance", monetary.NewInt(0),
 				},
 			},
 			context: EvalContext{
 				Variables: map[string]interface{}{
-					"balance": float64(100),
+					"balance": monetary.NewInt(100),
 				},
 				Metadata: map[string]json.RawMessage{},
 			},
@@ -85,12 +86,12 @@ func TestRules(t *testing.T) {
 		{
 			rule: map[string]interface{}{
 				"$lte": []interface{}{
-					"$balance", float64(0),
+					"$balance", monetary.NewInt(0),
 				},
 			},
 			context: EvalContext{
 				Variables: map[string]interface{}{
-					"balance": float64(0),
+					"balance": monetary.NewInt(0),
 				},
 				Metadata: map[string]json.RawMessage{},
 			},
@@ -101,7 +102,7 @@ func TestRules(t *testing.T) {
 				"$and": []interface{}{
 					map[string]interface{}{
 						"$gt": []interface{}{
-							"$balance", float64(0),
+							"$balance", monetary.NewInt(0),
 						},
 					},
 					map[string]interface{}{
@@ -116,7 +117,7 @@ func TestRules(t *testing.T) {
 			},
 			context: EvalContext{
 				Variables: map[string]interface{}{
-					"balance": float64(10),
+					"balance": monetary.NewInt(10),
 				},
 				Metadata: map[string]json.RawMessage{
 					"approved": json.RawMessage("no"),

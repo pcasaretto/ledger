@@ -7,6 +7,7 @@ import (
 
 	"github.com/numary/go-libs/sharedapi"
 	"github.com/numary/ledger/pkg/core"
+	"github.com/numary/ledger/pkg/core/monetary"
 	"github.com/numary/ledger/pkg/storage"
 	"github.com/pkg/errors"
 )
@@ -18,7 +19,7 @@ var DefaultContracts = []core.Contract{
 				Name: "balance",
 			},
 			Op2: core.ConstantExpr{
-				Value: float64(0),
+				Value: monetary.NewInt(0),
 			},
 		},
 		Account: "*", // world still an exception

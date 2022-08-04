@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+
+	"github.com/numary/ledger/pkg/core/monetary"
 )
 
 type EvalContext struct {
@@ -20,6 +22,7 @@ type Expr interface {
 
 type Value interface {
 	eval(ctx EvalContext) interface{}
+	evalMonetaryInt(ctx EvalContext) *monetary.Int
 }
 
 type ExprOr []Expr
@@ -77,7 +80,7 @@ type ExprGt struct {
 }
 
 func (o *ExprGt) Eval(ctx EvalContext) bool {
-	return o.Op1.eval(ctx).(float64) > o.Op2.eval(ctx).(float64)
+	return o.Op1.evalMonetaryInt(ctx).Gt(o.Op2.evalMonetaryInt(ctx))
 }
 
 func (e ExprGt) MarshalJSON() ([]byte, error) {
@@ -92,7 +95,7 @@ type ExprLt struct {
 }
 
 func (o *ExprLt) Eval(ctx EvalContext) bool {
-	return o.Op1.eval(ctx).(float64) < o.Op2.eval(ctx).(float64)
+	return o.Op1.evalMonetaryInt(ctx).Lt(o.Op2.evalMonetaryInt(ctx))
 }
 
 func (e ExprLt) MarshalJSON() ([]byte, error) {
@@ -107,7 +110,7 @@ type ExprGte struct {
 }
 
 func (o *ExprGte) Eval(ctx EvalContext) bool {
-	return o.Op1.eval(ctx).(float64) >= o.Op2.eval(ctx).(float64)
+	return o.Op1.evalMonetaryInt(ctx).Gte(o.Op2.evalMonetaryInt(ctx))
 }
 
 func (e ExprGte) MarshalJSON() ([]byte, error) {
@@ -122,7 +125,7 @@ type ExprLte struct {
 }
 
 func (o *ExprLte) Eval(ctx EvalContext) bool {
-	return o.Op1.eval(ctx).(float64) <= o.Op2.eval(ctx).(float64)
+	return o.Op1.evalMonetaryInt(ctx).Lte(o.Op2.evalMonetaryInt(ctx))
 }
 
 func (e ExprLte) MarshalJSON() ([]byte, error) {
@@ -139,6 +142,10 @@ func (e ConstantExpr) eval(ctx EvalContext) interface{} {
 	return e.Value
 }
 
+func (e ConstantExpr) evalMonetaryInt(ctx EvalContext) *monetary.Int {
+	return e.Value.(*monetary.Int)
+}
+
 func (e ConstantExpr) MarshalJSON() ([]byte, error) {
 	return json.Marshal(e.Value)
 }
@@ -149,6 +156,10 @@ type VariableExpr struct {
 
 func (e VariableExpr) eval(ctx EvalContext) interface{} {
 	return ctx.Variables[e.Name]
+}
+
+func (e VariableExpr) evalMonetaryInt(ctx EvalContext) *monetary.Int {
+	return ctx.Variables[e.Name].(*monetary.Int)
 }
 
 func (e VariableExpr) MarshalJSON() ([]byte, error) {

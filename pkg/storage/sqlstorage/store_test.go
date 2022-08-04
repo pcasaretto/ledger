@@ -486,7 +486,7 @@ func testMapping(t *testing.T, store *sqlstorage.Store) {
 			{
 				Expr: &core.ExprGt{
 					Op1: core.VariableExpr{Name: "balance"},
-					Op2: core.ConstantExpr{Value: float64(0)},
+					Op2: core.ConstantExpr{Value: monetary.NewInt(0)},
 				},
 				Account: "orders:*",
 			},
