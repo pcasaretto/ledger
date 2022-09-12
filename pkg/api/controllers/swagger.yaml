@@ -50,7 +50,7 @@ paths:
       - name: metadata
         in: query
         description: Filter accounts by metadata key value pairs. Nested objects can be used as seen in the example below.
-        style: deepObject
+        style: form
         explode: true
         schema:
           type: object
